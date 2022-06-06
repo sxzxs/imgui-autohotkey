@@ -38,6 +38,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 //全局变量， 线程共享
 HWND g_main_hwnd = NULL;
 int g_thread_id_hotkey = NULL;
+int g_x = 0;
+int g_y = 0;
 LRESULT OnForceShow(HWND hWnd)
 {
 	HWND hForeWnd = NULL; 
@@ -111,6 +113,7 @@ void imgui_card_back(wchar_t car_w[10])
     else
     {
         ERR("car error!");
+        return;
     }
     TRACE(color_obj);
     TRACE(color_pre);
@@ -132,9 +135,17 @@ void imgui_card_back(wchar_t car_w[10])
         {
             ahkFunction(_T("sendkey"), _T("t"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
         }
+        if(color == color_obj)
+            ahkFunction(_T("sound_play"), _T("*64"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
+        else
+            ahkFunction(_T("sound_play"), _T("*16"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
     }
     else if (color == color_obj)// 当颜色为黄牌时
     {
+        if(color == color_obj)
+            ahkFunction(_T("sound_play"), _T("*64"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
+        else
+            ahkFunction(_T("sound_play"), _T("*16"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
     }
     else
     {
@@ -147,6 +158,10 @@ void imgui_card_back(wchar_t car_w[10])
         {
             ahkFunction(_T("sendkey"), _T("t"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
         }
+        if(color == color_obj)
+            ahkFunction(_T("sound_play"), _T("*64"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
+        else
+            ahkFunction(_T("sound_play"), _T("*16"), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
     }
 }
 
@@ -462,17 +477,25 @@ int main(int, char**)
                     ShowWindow(h_console, SW_NORMAL);
 
             }
-            static int x_position = 100;
-            ImGui::InputInt(u8"x坐标##x坐标", &x_position);
+            static int x_position = config["color_x"];
+            if (ImGui::InputInt(u8"x坐标##x坐标", &x_position))
+            {
+				config["color_x"] = x_position;
+            }
 
-            static int y_position = 100;
-            ImGui::InputInt(u8"y坐标##y坐标", &y_position);
+            static int y_position = config["color_y"];
+            if (ImGui::InputInt(u8"y坐标##y坐标", &y_position))
+            {
+				config["color_y"] = y_position;
+            }
 
             static string color = "";
             ImGui::Text("%s", color);
-            if (ImGui::Button("log button"))
+            if (ImGui::Button(u8"取色"))
             {
                 imgui_get_pix_color(x_position, y_position, color);
+                
+                ahkFunction(_T("highlight_position"), (wchar_t *)to_wstring(x_position).c_str(), (wchar_t *)to_wstring(y_position).c_str(), NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, g_thread_id_hotkey);
             }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
