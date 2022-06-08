@@ -248,7 +248,6 @@ int main(int, char**)
     HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Dear ImGui DirectX11 Example"), WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, NULL, NULL, wc.hInstance, NULL);
     //HWND hwnd = ::CreateWindow(wc.lpszClassName, _T("Dear ImGui DirectX11 Example"), WS_OVERLAPPEDWINDOW, -100, -100, 1, 1, NULL, NULL, wc.hInstance, NULL);
     g_main_hwnd = hwnd;
-	::SetWindowPos( hwnd, HWND_TOPMOST, 0,0,0,0, SWP_NOSIZE|SWP_NOMOVE ); 
 
     // Initialize Direct3D
     if (!CreateDeviceD3D(hwnd))
@@ -261,6 +260,7 @@ int main(int, char**)
     // Show the window
     ::ShowWindow(hwnd, SW_SHOWDEFAULT);
     ::UpdateWindow(hwnd);
+	::SetWindowPos( hwnd, HWND_TOPMOST, 0,0,0,0, SWP_NOSIZE|SWP_NOMOVE ); 
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
